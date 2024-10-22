@@ -5,6 +5,7 @@ import pyautogui
 from pywinauto import Application
 import win32gui
 import os
+import pytesseract  # Tesseract OCR 모듈
 
 def restore_and_focus_window(window_title):
     try:
@@ -57,3 +58,4 @@ def capture_specific_window(window_title, save_folder='screenshots'):
     cv2.imwrite(screenshot_path, screenshot_rgb)
 
     return screenshot_path  # 이미지 경로 반환
+
