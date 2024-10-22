@@ -29,8 +29,23 @@ def restore_and_focus_window(window_title):
     except Exception as e:
         print(f"오류 발생: {e}")
 
+def move_window_to_origin(window_title):
+    try:
+        hwnd = win32gui.FindWindow(None, window_title)  # 창 핸들을 찾음
+        if hwnd:
+            # 창을 (0, 0)으로 이동
+            win32gui.MoveWindow(hwnd, 0, 0, 800, 600, True)  # (x, y, width, height, repaint)
+            time.sleep(0.5)  # 이동 후 잠시 대기
+        else:
+            print("해당 제목의 창을 찾을 수 없습니다.")
+
+    except Exception as e:
+        print(f"오류 발생: {e}")
+
+
 def capture_specific_window(window_title, save_folder='screenshots'):
     restore_and_focus_window(window_title)
+    move_window_to_origin(window_title)  # 창을 (0, 0)으로 이동
 
     # 창의 위치와 크기를 가져옵니다.
     hwnd = win32gui.FindWindow(None, window_title)
@@ -58,4 +73,3 @@ def capture_specific_window(window_title, save_folder='screenshots'):
     cv2.imwrite(screenshot_path, screenshot_rgb)
 
     return screenshot_path  # 이미지 경로 반환
-

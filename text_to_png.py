@@ -35,7 +35,7 @@ def text_to_image(text, font_path='C:/Windows/Fonts/malgun.ttf', font_size=50, b
     text_width, text_height = text_bbox[2] - text_bbox[0], text_bbox[3] - text_bbox[1]
 
     # 여백을 추가한 이미지 생성
-    padding = 20  # 여유 공간
+    padding = 30  # 여유 공간
     image = Image.new('RGB', (text_width + padding * 2, text_height + padding * 2), color=bg_color_rgb)
 
     # 텍스트 그리기
@@ -56,6 +56,10 @@ def text_to_image(text, font_path='C:/Windows/Fonts/malgun.ttf', font_size=50, b
     return output_image_path
 
 def preprocess_image(image_path):
+    # 이미 전처리된 파일이면 처리하지 않음
+    if '_preprocessed' in image_path:
+        return image_path  # 이미 전처리된 파일이므로 경로를 그대로 반환
+
     # 이미지를 OpenCV로 읽기
     screenshot = cv2.imread(image_path)
     
@@ -63,48 +67,45 @@ def preprocess_image(image_path):
     gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
     _, binary_img = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
 
-    # 처리된 이미지 저장 (디버깅용)
+    # 처리된 이미지 저장 경로 설정
     preprocessed_image_path = image_path.replace('.png', '_preprocessed.png')
+    
+    # 처리된 이미지 저장
     cv2.imwrite(preprocessed_image_path, binary_img)
     
-    return preprocessed_image_path
+    return preprocessed_image_path  # 전처리된 이미지 경로 반환
 
-def check_words(image_path_1, image_path_2):
-    # 이미지 전처리
-    image_path_1_processed = preprocess_image(image_path_1)
-    image_path_2_processed = preprocess_image(image_path_2)
 
-    # 전처리한 이미지 보기
-    img1 = cv2.imread(image_path_1_processed)
-    img2 = cv2.imread(image_path_2_processed)
-
-    cv2.imshow('Processed Image 1', img1)
-    cv2.imshow('Processed Image 2', img2)
-    
-    # 키 입력 대기 (창을 닫기 위해)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-    # OCR 수행 (한글 및 영어 언어 설정)
+def ocr_from_images_in_folder(folder_path):
     custom_config = r'--oem 3 --psm 6 -l kor+eng'
+    all_text = ""
+    for file_name in os.listdir(folder_path):
+        if file_name.endswith(".png"):  # .png 파일만 처리
+            image_path = os.path.join(folder_path, file_name)
+            processed_image_path = preprocess_image(image_path)  # 이미지 전처리
+            text = pytesseract.image_to_string(processed_image_path, config=custom_config).strip()  # OCR 수행 및 공백 제거
+            all_text += text + " "  # 추출된 텍스트를 결합
+    return all_text.strip()  # 마지막 공백 제거 후 반환
 
-    # 첫 번째 이미지에서 텍스트 추출
-    text1 = pytesseract.image_to_string(image_path_1_processed, config=custom_config).strip()  # 공백 제거
-    # 두 번째 이미지에서 텍스트 추출
-    text2 = pytesseract.image_to_string(image_path_2_processed, config=custom_config).strip()  # 공백 제거
-
+def check_words(image_path_2, images_folder='images'):
+    # text1에는 images 폴더 안에 있는 모든 이미지에서 추출한 텍스트를 담습니다.
+    text1 = ocr_from_images_in_folder(images_folder)
+    
+    # 이미지 전처리 및 text2 추출
+    image_path_2_processed = preprocess_image(image_path_2)
+    custom_config = r'--oem 3 --psm 6 -l kor+eng'
+    text2 = pytesseract.image_to_string(image_path_2_processed, config=custom_config).strip()
+    
     print("첫 번째 이미지 텍스트:", text1)
-
 
     words_from_text2 = set(text2.split())  # 두 번째 이미지의 단어 목록 생성
 
     for word in text1.split():
         print("카톡 : " , words_from_text2, " 끝 카톡")
         print("어디야: ", word, " :끝")
-        if word in words_from_text2:  # 두 번째 이미지의 단어 목록과 비교
-            
+        if word in words_from_text2:
             print(f"'{word}' found in the second image.")
-            return True  # 단어가 발견되면 True 반환
+            return True
 
     print("No words from the first image found in the second image.")
-    return False  # 단어가 발견되지 않으면 False 반환
+    return False
