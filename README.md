@@ -1,6 +1,6 @@
 # hide_harmfulMessage
 
-![프로젝트 로고](image.png)
+![프로젝트 로고](mainpng.png)
 
 ## 개요
 hide_harmfulMessage는 해로운 메시지를 자동으로 감지하고 숨기는 프로그램입니다. 광고, 스팸 문자등을 제거합니다.
