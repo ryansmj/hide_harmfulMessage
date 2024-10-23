@@ -35,15 +35,15 @@ hide_harmfulMessage는 해로운 메시지를 자동으로 감지하고 숨기�
 ```
   pip install pytesseract
 ```
-- **pywinauto**: 윈도우 GUI 애플리케이션을 자동화 [관련 문서](https://pywinauto.github.io/)
+- **pywinauto**: 윈도우 GUI 애플리케이션을 자동화 [관련 문서](https://github.com/pywinauto/pywinauto)
 ```
   pip install pywinauto
 ```
-- **win32gui**: 윈도우 GUI 창을 제어 [관련 문서](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowtext)
+- **win32gui**: 윈도우 GUI 창을 제어 [관련 문서](https://pypi.org/project/win32gui/)
 ```
   pip install win32gui
 ```
-- **matplotlib.pyplot**: 그래프와 이미지를 시각화 [관련 문서](https://matplotlib.org/stable/api/pyplot_api.html)
+- **matplotlib.pyplot**: 그래프와 이미지를 시각화 [관련 문서](https://matplotlib.org/stable/api/pyplot_summary.html)
 
 - **matplotlib.patches**: 이미지에 강조 표시를 하기 위해 도형 제작 [관련 문서](https://matplotlib.org/stable/api/patches_api.html)
 ```
