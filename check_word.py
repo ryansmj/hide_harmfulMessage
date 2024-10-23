@@ -109,3 +109,19 @@ def check_words(image_path, check_word_file='checkword.txt'):
     print("이미지에서 감지된 단어가 없습니다.")
     scrolldown()
     return False
+
+def remove_check_word(file_path, word):
+    """파일에서 체크 단어를 삭제하는 함수."""
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+        
+        # 삭제할 단어가 포함된 줄을 제외한 리스트 생성
+        updated_lines = [line for line in lines if line.strip() != word]
+
+        # 파일에 업데이트된 내용 저장
+        with open(file_path, 'w') as file:
+            file.writelines(updated_lines)
+
+    except Exception as e:
+        print(f"단어 삭제 중 오류 발생: {e}")

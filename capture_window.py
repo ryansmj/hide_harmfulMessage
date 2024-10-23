@@ -5,7 +5,6 @@ import pyautogui
 from pywinauto import Application
 import win32gui
 import os
-import pytesseract  # Tesseract OCR 모듈
 
 def restore_and_focus_window(window_title):
     try:
